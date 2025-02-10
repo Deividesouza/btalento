@@ -1,6 +1,6 @@
-package com.example.btalento.model;
+package com.example.btalento.enums;
 
-public enum PerfilAcesso {
+public enum PessoaFisicaTipo {
 
     ADMINISTRADOR,
     PARTICIPANTE,
@@ -8,4 +8,5 @@ public enum PerfilAcesso {
     SUPERVISOROM,
     GESTOR,
     PREPOSTO,
+
 }

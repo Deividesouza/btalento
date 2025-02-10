@@ -1,5 +1,6 @@
 package com.example.btalento.model;
 
+import com.example.btalento.enums.PessoaStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
-import java.util.List;
 
 @Entity(name = "pessoa")
 @Table (name = "pessoa")
@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Pessoa {
 
     @Id

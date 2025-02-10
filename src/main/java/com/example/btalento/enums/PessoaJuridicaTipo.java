@@ -1,4 +1,4 @@
-package com.example.btalento.model;
+package com.example.btalento.enums;
 
 public enum PessoaJuridicaTipo {
 

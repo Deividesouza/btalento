@@ -20,6 +20,8 @@ public class Cidade {
 
     private String nome;
 
+    private String ufSigla;
+
     @ManyToOne
     @JoinColumn(name = "uf_id")
     private UF uf;

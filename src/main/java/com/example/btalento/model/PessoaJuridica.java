@@ -1,6 +1,7 @@
 package com.example.btalento.model;
 
 
+import com.example.btalento.enums.PessoaJuridicaTipo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,11 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PessoaJuridica {
+public class PessoaJuridica extends Pessoa{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     private String cnpj;
 
@@ -35,8 +33,8 @@ public class PessoaJuridica {
     @ManyToMany
     @JoinTable(
             name = "pessoa_juridica_Cursos",  // Nome da tabela intermediária
-            joinColumns = @JoinColumn(name = "pessoa_juridica_id"),  // Chave estrangeira para Endereco
-            inverseJoinColumns = @JoinColumn(name = "cursos_id")  // Chave estrangeira para Cidade
+            joinColumns = @JoinColumn(name = "pessoa_juridica_id"),
+            inverseJoinColumns = @JoinColumn(name = "cursos_id")
     )
     private List<Cursos> cursos;
 

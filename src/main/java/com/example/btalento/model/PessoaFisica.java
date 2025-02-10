@@ -1,11 +1,12 @@
 package com.example.btalento.model;
 
+import com.example.btalento.enums.PerfilAcesso;
+import com.example.btalento.enums.PessoaFisicaTipo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.boot.autoconfigure.web.WebProperties;
 
 @Entity(name = "pessoa_fisica")
 @Table
@@ -13,28 +14,22 @@ import org.springframework.boot.autoconfigure.web.WebProperties;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PessoaFIsica {
+public class PessoaFisica extends Pessoa{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
 
     private String cpf;
-
     private String celular;
-
     private String login;
-
     private String senha;
-
-    @OneToOne
-    @JoinColumn(name = "id_pessoa")
-    private Pessoa pessoa;
 
     @Enumerated(EnumType.STRING)
     private PessoaFisicaTipo pessoaFisicaTipo;
 
     @Enumerated(EnumType.STRING)
     private PerfilAcesso perfilAcesso;
+
+    @ManyToOne
+    @JoinColumn(name = "pessoa_id")
+    private Pessoa pessoa;  // Relação com a entidade Pessoa
 
 }

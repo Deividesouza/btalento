@@ -16,11 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter
 @Setter
-public class PessoaFisicaParticipante {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+public class PessoaFisicaParticipante extends PessoaFisica{
 
     private Date dataPraca;
 
@@ -31,9 +27,5 @@ public class PessoaFisicaParticipante {
     private String postgrad;
 
     private String ativaReserva;
-
-    @ManyToOne
-    @JoinColumn(name = "id_pessoa_fisica")
-    private PessoaFIsica pessoaFIsica;
 
 }
