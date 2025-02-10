@@ -1,12 +1,12 @@
 package com.example.btalento.model;
 
-import com.example.btalento.enums.PessoaStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity(name = "pessoa")
@@ -30,12 +30,15 @@ public class Pessoa {
 
     private Date dataCadastro;
 
-    private Date dataValidade;
+    private LocalDate dataValidade;
 
     @ManyToOne
     @JoinColumn(name = "endereco_id")
     private Endereco endereco;
 
-    @Enumerated(EnumType.STRING)
+    @OneToOne
+    @JoinColumn(name = "pessoa_status_id")
     private PessoaStatus pessoaStatus;
+
+
 }

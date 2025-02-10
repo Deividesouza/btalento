@@ -1,7 +1,6 @@
 package com.example.btalento.model;
 
-import com.example.btalento.enums.PerfilAcesso;
-import com.example.btalento.enums.PessoaFisicaTipo;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,11 +21,13 @@ public class PessoaFisica extends Pessoa{
     private String login;
     private String senha;
 
-    @Enumerated(EnumType.STRING)
+    @OneToOne
+    @JoinColumn(name = "pessoa_fisica_tipo")
     private PessoaFisicaTipo pessoaFisicaTipo;
 
-    @Enumerated(EnumType.STRING)
-    private PerfilAcesso perfilAcesso;
+    @OneToOne
+    @JoinColumn(name = "perfil_acesso_id")
+    private com.example.btalento.model.PerfilAcesso perfilAcesso;
 
     @ManyToOne
     @JoinColumn(name = "pessoa_id")

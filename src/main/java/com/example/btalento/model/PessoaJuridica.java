@@ -1,7 +1,6 @@
 package com.example.btalento.model;
 
 
-import com.example.btalento.enums.PessoaJuridicaTipo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+
 public class PessoaJuridica extends Pessoa{
 
 
@@ -27,7 +27,8 @@ public class PessoaJuridica extends Pessoa{
     @JoinColumn(name = "id_pessoa")
     private Pessoa pessoa;
 
-    @Enumerated(EnumType.STRING)
+    @OneToOne
+    @JoinColumn(name = "pessoa_juridica_tipo")
     private PessoaJuridicaTipo pessoaJuridicaTipo;
 
     @ManyToMany

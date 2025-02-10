@@ -1,18 +1,13 @@
 package com.example.btalento.service;
 
 import com.example.btalento.dto.PessoaFisicaDTO;
-import com.example.btalento.model.Endereco;
-import com.example.btalento.model.Pessoa;
-import com.example.btalento.model.PessoaFisica;
-import com.example.btalento.model.Cidade;
-import com.example.btalento.repository.PessoaRepository;
-import com.example.btalento.repository.PessoaFisicaRepository;
-import com.example.btalento.repository.EnderecoRepository;
-import com.example.btalento.repository.CidadeRepository;
+import com.example.btalento.model.*;
+import com.example.btalento.repository.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -22,57 +17,72 @@ import java.util.Optional;
 public class PessoaFisicaService {
 
     private final PessoaFisicaRepository pessoaFisicaRepository;
+    private final PessoaRepository pessoaRepository;
     private final EnderecoRepository enderecoRepository;
     private final CidadeRepository cidadeRepository;
-    private final PessoaRepository pessoaRepository; // Injeção de dependência para Pessoa
+    private final UFRepository ufRepository;
 
     @Transactional
     public PessoaFisica criarPessoaFisica(PessoaFisicaDTO dto) {
-        // Criando uma instância de Pessoa (classe base)
+        if (dto == null || dto.getEnderecoDTO() == null || dto.getEnderecoDTO().getCidade() == null ||
+                dto.getEnderecoDTO().getCidade().getUf() == null || dto.getPessoaDTO() == null) {
+            throw new IllegalArgumentException("Dados obrigatórios ausentes: Endereço, Cidade, UF ou PessoaDTO estão nulos.");
+        }
+
+        // Verifica se já existe uma Pessoa Física com o mesmo CPF
+        pessoaFisicaRepository.findByCpf(dto.getCpf()).ifPresent(p -> {
+            throw new RuntimeException("Já existe uma pessoa física cadastrada com este CPF.");
+        });
+
+        // Criando ou recuperando a UF
+        UF uf = ufRepository.findBySigla(dto.getEnderecoDTO().getCidade().getUf().getSigla())
+                .orElseGet(() -> {
+                    UF novaUf = new UF();
+                    novaUf.setSigla(dto.getEnderecoDTO().getCidade().getUf().getSigla());
+                    novaUf.setNome(dto.getEnderecoDTO().getCidade().getUf().getNome());
+                    return ufRepository.save(novaUf);
+                });
+
+        // Criando ou recuperando a Cidade associada à UF
+        Cidade cidade = cidadeRepository.findByNomeAndUf(dto.getEnderecoDTO().getCidade().getNome(), uf)
+                .orElseGet(() -> {
+                    Cidade novaCidade = new Cidade();
+                    novaCidade.setNome(dto.getEnderecoDTO().getCidade().getNome());
+                    novaCidade.setUf(uf);
+                    return cidadeRepository.save(novaCidade);
+                });
+
+        // Criando um novo Endereço
+        Endereco endereco = new Endereco();
+        endereco.setLogradouro(dto.getEnderecoDTO().getLogradouro());
+        endereco.setCep(dto.getEnderecoDTO().getCep());
+        endereco.setNumeroCasa(dto.getEnderecoDTO().getNumeroCasa() != null ?
+                Integer.parseInt(dto.getEnderecoDTO().getNumeroCasa()) : 0);
+        endereco.setCidade(cidade);
+        endereco = enderecoRepository.save(endereco);
+
+        // Criando e salvando a Pessoa
         Pessoa pessoa = new Pessoa();
-        pessoa.setNome(dto.getNome());
-        pessoa.setTelefone(dto.getTelefone());
-        pessoa.setEmail(dto.getEmail());
-        pessoa.setDataCadastro(new Date()); // Coloque o valor adequado para data
-        pessoa.setDataValidade(dto.getDataValidade());
-        pessoa.setPessoaStatus(dto.getPessoaStatus());
+        pessoa.setNome(dto.getPessoaDTO().getNome());
+        pessoa.setTelefone(dto.getPessoaDTO().getTelefone());
+        pessoa.setEmail(dto.getPessoaDTO().getEmail());
+        pessoa.setDataCadastro(new Date());
+        pessoa.setDataValidade(LocalDate.from(dto.getPessoaDTO().getDataValidade()));
+        pessoa.setPessoaStatus(PessoaStatus.(dto.getPessoaDTO().getPessoaStatus()));
+        pessoa = pessoaRepository.save(pessoa);
 
-        // Salvando a Pessoa antes de associar à PessoaFisica
-        pessoa = pessoaRepository.save(pessoa); // Salva a instância de Pessoa
-
-        // Criando a instância de PessoaFisica (classe filha)
+        // Criando e salvando a Pessoa Física
         PessoaFisica pessoaFisica = new PessoaFisica();
         pessoaFisica.setCpf(dto.getCpf());
         pessoaFisica.setCelular(dto.getCelular());
         pessoaFisica.setLogin(dto.getLogin());
         pessoaFisica.setSenha(dto.getSenha());
-        pessoaFisica.setPessoaFisicaTipo(dto.getPessoaFisicaTipo());
-        pessoaFisica.setPerfilAcesso(dto.getPerfilAcesso());
+        pessoaFisica.setPessoaFisicaTipo(PessoaFisicaTipo.valueOf(dto.getPessoaFisicaTipo()));
+        pessoaFisica.setPerfilAcesso(PerfilAcesso.valueOf(dto.getPerfilAcesso()));
+        pessoaFisica.setEndereco(endereco);
+        pessoaFisica.setPessoa(pessoa);
 
-        // Verificando se a cidade existe, caso contrário, criando uma nova
-        Optional<Cidade> cidade = cidadeRepository.findByNomeAndUf_Sigla(dto.getCidadeNome(), dto.getCidadeUfSigla());
-        if (!cidade.isPresent()) {
-            Cidade novaCidade = new Cidade();
-            novaCidade.setNome(dto.getCidadeNome());
-            novaCidade.setUfSigla(dto.getCidadeUfSigla()); // Supondo que a sigla da UF seja um campo da cidade
-            cidadeRepository.save(novaCidade);
-            cidade = Optional.of(novaCidade); // Atualiza a referência da cidade com a nova cidade criada
-        }
-
-        // Criando o endereço
-        Endereco endereco = new Endereco();
-        endereco.setLogradouro(dto.getLogradouro());
-        endereco.setCep(dto.getCep());
-        endereco.setNumeroCasa(dto.getNumeroCasa());
-        endereco.setCidade(cidade.get());
-        enderecoRepository.save(endereco); // Salvando o endereço
-
-        // Associando o endereço e a pessoaFisica à pessoaFisica
-        pessoaFisica.setEndereco(endereco); // Associando o endereço à pessoaFisica
-        pessoaFisica.setPessoa(pessoa); // A associação da classe filha com a classe pai
-
-        // Salvando a PessoaFisica
-        return pessoaFisicaRepository.save(pessoaFisica); // Salva a instância de PessoaFisica
+        return pessoaFisicaRepository.save(pessoaFisica);
     }
 
     public List<PessoaFisica> listarTodas() {

@@ -25,9 +25,9 @@ public class PessoaFisicaController {
         return new ResponseEntity<>(pessoaFisica, HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping("/buscar")
     public ResponseEntity<List<PessoaFisica>> listarTodas() {
-        List<PessoaFisica> pessoasFisicas = pessoaFisicaService.listarTodas();
+        List<PessoaFisica> pessoasFisicas = pessoaFisicaService.listarTodas ();
         return new ResponseEntity<>(pessoasFisicas, HttpStatus.OK);
     }
 
