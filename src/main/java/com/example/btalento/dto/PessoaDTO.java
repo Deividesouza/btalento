@@ -8,11 +8,12 @@ import java.time.LocalDateTime;
 
 @lombok.Data
 public class PessoaDTO {
+    private Long id;
     private String nome;
     private String telefone;
     private String email;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private LocalDateTime dataValidade;
-    private String pessoaStatus;
+    private PessoaStatusDTO pessoaStatus;
 
 }

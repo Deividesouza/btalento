@@ -22,7 +22,7 @@ public class PessoaFisica extends Pessoa{
     private String senha;
 
     @OneToOne
-    @JoinColumn(name = "pessoa_fisica_tipo")
+    @JoinColumn(name = "pessoa_fisica_tipo_id")
     private PessoaFisicaTipo pessoaFisicaTipo;
 
     @OneToOne
