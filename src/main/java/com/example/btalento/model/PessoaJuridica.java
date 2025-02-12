@@ -16,8 +16,11 @@ import java.util.List;
 @Getter
 @Setter
 
-public class PessoaJuridica extends Pessoa{
+public class PessoaJuridica {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String cnpj;
 

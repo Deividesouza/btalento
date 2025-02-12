@@ -1,10 +1,7 @@
 package com.example.btalento.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "uf")
@@ -13,11 +10,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UF {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String nome;  // Nome da UF (Estado)
-    private String sigla; // Sigla da UF (ex: SP, RJ, etc)
+    private String nome;
+    private String sigla; // Ex: SP, RJ, BA...
 }

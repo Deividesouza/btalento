@@ -14,11 +14,10 @@ import lombok.Setter;
 @Setter
 public class PessoaFisicaTipo {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String pessoaFisicaTipo;
+    private String descricao;
 
 
 }

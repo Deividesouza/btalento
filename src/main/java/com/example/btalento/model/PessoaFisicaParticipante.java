@@ -1,31 +1,29 @@
 package com.example.btalento.model;
 
-
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.aot.generate.GeneratedTypeReference;
+import lombok.*;
 
 import java.util.Date;
 
 @Entity
-@Table
-@AllArgsConstructor
+@Table(name = "pessoa_fisica_participante")
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-public class PessoaFisicaParticipante extends PessoaFisica{
+public class PessoaFisicaParticipante {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private Date dataPraca;
-
     private Date dataNasc;
-
     private Date dataBaixa;
-
     private String postgrad;
-
     private String ativaReserva;
+
+    @OneToOne
+    @JoinColumn(name = "pessoa_fisica_id")
+    private PessoaFisica pessoaFisica;
 
 }

@@ -18,5 +18,5 @@ public class PessoaStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String Status;
+    private String descricao;
 }
