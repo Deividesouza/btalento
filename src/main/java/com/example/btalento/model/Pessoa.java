@@ -18,6 +18,7 @@ public class Pessoa {
     private Long id;
     private String nome;
     private String telefone;
+
     private String email;
     private LocalDate dataCadastro;
     private LocalDate dataValidade;
