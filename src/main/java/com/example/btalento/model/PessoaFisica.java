@@ -19,11 +19,11 @@ public class PessoaFisica {
     private String login;
     private String senha;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "pessoa_fisica_tipo_id")
     private PessoaFisicaTipo pessoaFisicaTipo;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "perfil_acesso_id")
     private PerfilAcesso perfilAcesso;
 

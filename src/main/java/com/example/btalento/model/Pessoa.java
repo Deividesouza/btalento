@@ -26,7 +26,7 @@ public class Pessoa {
     @JoinColumn(name = "endereco_id")
     private Endereco endereco;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "pessoa_status_id")
     private PessoaStatus pessoaStatus;
 }
