@@ -51,5 +51,11 @@ public class PessoaController {
         return pessoaFisica.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @DeleteMapping("/fisicas/deletar/{id}")
+    public ResponseEntity<Void> deletarPessoaFisica(@PathVariable Long id) {
+        pessoaService.deletarPessoaFisicaPorId(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }

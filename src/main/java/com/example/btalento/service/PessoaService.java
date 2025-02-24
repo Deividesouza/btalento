@@ -71,5 +71,27 @@ public class PessoaService {
         return pessoaFisicaRepository.findById(id);
     }
 
+    @Transactional
+    public void deletarPessoaFisicaPorId(Long id) {
+        Optional<PessoaFisica> pessoaFisicaOptional = pessoaFisicaRepository.findById(id);
+
+        if (pessoaFisicaOptional.isPresent()) {
+            PessoaFisica pessoaFisica = pessoaFisicaOptional.get();
+
+            // Remover vínculo com a entidade Pessoa antes de excluir
+            Pessoa pessoa = pessoaFisica.getPessoa();
+            if (pessoa != null) {
+                pessoaFisica.setPessoa(null);
+                pessoaRepository.delete(pessoa);
+            }
+
+            // Excluir a pessoa física
+            pessoaFisicaRepository.delete(pessoaFisica);
+        } else {
+            throw new RuntimeException("Pessoa Física com ID " + id + " não encontrada.");
+        }
+    }
+
+
 
 }
