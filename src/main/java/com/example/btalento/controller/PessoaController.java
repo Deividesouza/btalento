@@ -1,8 +1,10 @@
 package com.example.btalento.controller;
 
 import com.example.btalento.dto.PessoaFisicaDTO;
+import com.example.btalento.dto.PessoaFisicaParticipanteDTO;
 import com.example.btalento.model.Pessoa;
 import com.example.btalento.model.PessoaFisica;
+import com.example.btalento.model.PessoaFisicaParticipante;
 import com.example.btalento.service.PessoaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,33 +20,18 @@ public class PessoaController {
     @Autowired
     private PessoaService pessoaService;
 
-    // Endpoint para cadastro de pessoa
+    // ================ ENDPOINTS PARA PESSOA FÍSICA ================
     @PostMapping("/cadastrar")
     public ResponseEntity<PessoaFisica> cadastrarPessoa(@RequestBody PessoaFisicaDTO dto) {
         PessoaFisica pessoaFisica = pessoaService.salvarPessoaComFisica(dto);
         return ResponseEntity.ok(pessoaFisica);
     }
 
-    // Endpoint para listar todas as pessoas
-    @GetMapping
-    public ResponseEntity<List<Pessoa>> listarTodasPessoas() {
-        return ResponseEntity.ok(pessoaService.listarTodasPessoas());
-    }
-
-    // Endpoint para buscar pessoa por ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Pessoa> buscarPessoaPorId(@PathVariable Long id) {
-        Optional<Pessoa> pessoa = pessoaService.buscarPessoaPorId(id);
-        return pessoa.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    //Endpoint para listar todas as pessoas físicas
     @GetMapping("/fisicas")
     public ResponseEntity<List<PessoaFisica>> listarTodasPessoasFisicas() {
         return ResponseEntity.ok(pessoaService.listarTodasPessoasFisicas());
     }
 
-    // 🔹 Endpoint para buscar pessoa física por ID
     @GetMapping("/fisicas/{id}")
     public ResponseEntity<PessoaFisica> buscarPessoaFisicaPorId(@PathVariable Long id) {
         Optional<PessoaFisica> pessoaFisica = pessoaService.buscarPessoaFisicaPorId(id);
@@ -57,5 +44,28 @@ public class PessoaController {
         return ResponseEntity.noContent().build();
     }
 
+    // ================ ENDPOINTS PARA PESSOA FÍSICA PARTICIPANTE ================
+    @PostMapping("/participantes/cadastrar")
+    public ResponseEntity<PessoaFisicaParticipante> cadastrarParticipante(@RequestBody PessoaFisicaParticipanteDTO dto) {
+        PessoaFisicaParticipante participante = pessoaService.salvarPessoaFisicaParticipante(dto);
+        return ResponseEntity.ok(participante);
+    }
 
+    @GetMapping("/participantes/{id}")
+    public ResponseEntity<PessoaFisicaParticipante> buscarParticipantePorId(@PathVariable Long id) {
+        Optional<PessoaFisicaParticipante> participante = pessoaService.buscarPessoaFisicaParticipantePorId(id);
+        return participante.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // ================ ENDPOINTS GENÉRICOS ================
+    @GetMapping
+    public ResponseEntity<List<Pessoa>> listarTodasPessoas() {
+        return ResponseEntity.ok(pessoaService.listarTodasPessoas());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Pessoa> buscarPessoaPorId(@PathVariable Long id) {
+        Optional<Pessoa> pessoa = pessoaService.buscarPessoaPorId(id);
+        return pessoa.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }

@@ -30,4 +30,10 @@ public class Pessoa {
     @ManyToOne
     @JoinColumn(name = "pessoa_status_id")
     private PessoaStatus pessoaStatus;
+
+    @PrePersist
+    protected void prePersist() {
+        this.dataCadastro = LocalDate.now();
+    }
+
 }
