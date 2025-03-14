@@ -27,6 +27,13 @@ public class PessoaController {
         return ResponseEntity.ok(pessoaFisica);
     }
 
+    @PutMapping("/fisicas/editar/{id}")
+    public ResponseEntity<Void> editarPessoaFisica(@PathVariable Long id, @RequestBody PessoaFisicaDTO dto) {
+        pessoaService.editarPessoaFisica(id, dto);
+        return ResponseEntity.noContent().build();
+    }
+
+
     @GetMapping("/fisicas")
     public ResponseEntity<List<PessoaFisica>> listarTodasPessoasFisicas() {
         return ResponseEntity.ok(pessoaService.listarTodasPessoasFisicas());

@@ -40,6 +40,30 @@ public class PessoaService {
         pessoaFisica.setPessoa(pessoaSalva);
         return pessoaFisicaRepository.save(pessoaFisica);
     }
+    @Transactional
+    public void editarPessoaFisica(Long id, PessoaFisicaDTO dto) {
+        PessoaFisica pessoaFisica = pessoaFisicaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pessoa Física com ID " + id + " não encontrada."));
+
+        // Atualiza os dados da pessoa associada
+        Pessoa pessoa = pessoaFisica.getPessoa();
+        pessoa.setNome(dto.getPessoa().getNome());
+
+        // ✅ Salvar Endereço (se for novo ou atualizado)
+        Endereco novoEndereco = dto.getPessoa().getEndereco();
+        if (novoEndereco != null) {
+            Endereco enderecoSalvo = enderecoRepository.save(novoEndereco);
+            pessoa.setEndereco(enderecoSalvo);
+        }
+
+        pessoaRepository.save(pessoa); // ✅ Salvar a Pessoa com o Endereço atualizado
+
+        // ✅ Atualiza os campos da Pessoa Física
+        pessoaFisica.setCpf(dto.getPessoaFisica().getCpf());
+        pessoaFisicaRepository.save(pessoaFisica);
+    }
+
+
 
     // ================ MÉTODOS PARA PESSOA FÍSICA PARTICIPANTE ================
     @Transactional

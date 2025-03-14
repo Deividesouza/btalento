@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "pessoa_fisica_participante")
@@ -16,9 +17,9 @@ public class PessoaFisicaParticipante {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Date dataPraca;
-    private Date dataNasc;
-    private Date dataBaixa;
+    private LocalDate dataPraca;
+    private LocalDate dataNasc;
+    private LocalDate dataBaixa;
     private String postgrad;
     private String ativaReserva;
 
