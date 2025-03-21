@@ -14,7 +14,7 @@ public class CorsConfig implements WebMvcConfigurer {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("localhost:4200","localhost:8080") // Libera o Angular em desenvolvimento
+                        .allowedOrigins("http://localhost:4200","http://localhost:8080") // Libera o Angular em desenvolvimento
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);

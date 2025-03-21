@@ -49,16 +49,16 @@ public class PessoaService {
         Pessoa pessoa = pessoaFisica.getPessoa();
         pessoa.setNome(dto.getPessoa().getNome());
 
-        // ✅ Salvar Endereço (se for novo ou atualizado)
+        // Salvar Endereço (se for novo ou atualizado)
         Endereco novoEndereco = dto.getPessoa().getEndereco();
         if (novoEndereco != null) {
             Endereco enderecoSalvo = enderecoRepository.save(novoEndereco);
             pessoa.setEndereco(enderecoSalvo);
         }
 
-        pessoaRepository.save(pessoa); // ✅ Salvar a Pessoa com o Endereço atualizado
+        pessoaRepository.save(pessoa); // Salvar a Pessoa com o Endereço atualizado
 
-        // ✅ Atualiza os campos da Pessoa Física
+        // Atualiza os campos da Pessoa Física
         pessoaFisica.setCpf(dto.getPessoaFisica().getCpf());
         pessoaFisicaRepository.save(pessoaFisica);
     }
