@@ -28,15 +28,15 @@ public class PessoaFisicaParticipante {
     @JoinColumn(name = "pessoa_fisica_id")
     private PessoaFisica pessoaFisica;
 
-    @OneToMany(mappedBy = "pessoaFisicaParticipante")
+    @OneToMany(cascade = CascadeType.PERSIST)
     private List<FormacaoAcademica> formacoesAcademicas;
 
 
-    @OneToOne(mappedBy = "pessoaFisicaParticipante")
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Curriculo curriculo;
 
 
-    @OneToMany(mappedBy = "pessoaFisicaParticipante")
+    @OneToMany(cascade = CascadeType.PERSIST)
     private List<Experiencia> experiencias;
 
 }
