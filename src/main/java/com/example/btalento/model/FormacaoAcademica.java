@@ -3,6 +3,8 @@ package com.example.btalento.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "formacao_academica")
 @NoArgsConstructor
@@ -16,7 +18,11 @@ public class FormacaoAcademica {
     private Long id;
     private String curso;
     private String instituicao;
-    private Integer anoConclusao;
+    private LocalDate anoConclusao;
+    private LocalDate anoInicio;
+    private String nivel;
+    private String email;
+    private String telefone;
 
     @ManyToOne
     @JoinColumn(name = "pessoa_fisica_participante_id")

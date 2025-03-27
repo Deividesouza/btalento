@@ -20,7 +20,10 @@ public class Experiencia {
     private String cargo;
     private LocalDate dataInicio;
     private LocalDate dataFim;
+    private String email;
+    private String telefone;
     private String descricao;
+
 
     @ManyToOne
     @JoinColumn(name = "pessoa_fisica_participante_id")
