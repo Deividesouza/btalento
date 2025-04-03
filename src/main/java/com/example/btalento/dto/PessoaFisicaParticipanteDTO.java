@@ -10,5 +10,5 @@ import lombok.Data;
 public class PessoaFisicaParticipanteDTO {
     Pessoa pessoa;
     PessoaFisica pessoaFisica;
-    PessoaFisicaParticipante pessoaParticipante;
+    PessoaFisicaParticipante pessoaFisicaParticipante;
 }

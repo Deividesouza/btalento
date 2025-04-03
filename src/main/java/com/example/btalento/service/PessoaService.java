@@ -82,7 +82,7 @@ public class PessoaService {
         PessoaFisica pessoaFisicaSalva = pessoaFisicaRepository.save(pessoaFisica);
 
         // Salvar PessoaFisicaParticipante
-        PessoaFisicaParticipante participante = dto.getPessoaParticipante();
+        PessoaFisicaParticipante participante = dto.getPessoaFisicaParticipante();
         participante.setPessoaFisica(pessoaFisicaSalva);
         return pessoaFisicaParticipanteRepository.save(participante);
     }

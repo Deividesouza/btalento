@@ -54,7 +54,6 @@ public class ArquivoController {
             // Criar e salvar entidade Curriculo
             Curriculo curriculo = new Curriculo();
             curriculo.setNomeArquivoHash(fileHash);
-            curriculo.setPessoaFisicaParticipante(participante);
             curriculoRepository.save(curriculo);
 
             return ResponseEntity.ok("Currículo salvo com sucesso");

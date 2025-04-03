@@ -25,7 +25,5 @@ public class Experiencia {
     private String descricao;
 
 
-    @ManyToOne
-    @JoinColumn(name = "pessoa_fisica_participante_id")
-    private PessoaFisicaParticipante pessoaFisicaParticipante;
+
 }

@@ -24,7 +24,5 @@ public class FormacaoAcademica {
     private String email;
     private String telefone;
 
-    @ManyToOne
-    @JoinColumn(name = "pessoa_fisica_participante_id")
-    private PessoaFisicaParticipante pessoaFisicaParticipante;
+
 }
