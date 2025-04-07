@@ -4,6 +4,7 @@ package com.example.btalento.dto;
 import com.example.btalento.model.Pessoa;
 import com.example.btalento.model.PessoaFisica;
 import com.example.btalento.model.PessoaFisicaParticipante;
+import com.example.btalento.model.PostoGraduacao;
 import lombok.Data;
 
 @Data

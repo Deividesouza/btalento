@@ -19,14 +19,9 @@ public class Pessoa {
     private Long id;
     private String nome;
     private String telefone;
-
     private String email;
-
-
     private LocalDate dataCadastro;
-
     private LocalDate dataValidade;
-
 
     @ManyToOne
     @JoinColumn(name = "endereco_id")
@@ -35,6 +30,7 @@ public class Pessoa {
     @ManyToOne
     @JoinColumn(name = "pessoa_status_id")
     private PessoaStatus pessoaStatus;
+
     @PrePersist
     public void prePersist() {
         dataCadastro = LocalDate.now();

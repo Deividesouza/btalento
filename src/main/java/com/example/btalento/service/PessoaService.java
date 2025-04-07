@@ -25,6 +25,17 @@ public class PessoaService {
     private EnderecoRepository enderecoRepository;
 
     @Autowired
+    private AtivaReservaRepository  ativaReservaRepository;
+
+    @Autowired
+    private ExperienciaRepository experienciaRepository;
+
+    @Autowired
+    private FormacaoAcademicaRepository formacaoAcademicaRepository;
+
+    @Autowired
+    private PostoGraduacaoRepository postoGraduacaoRepository;
+    @Autowired
     private PessoaFisicaParticipanteRepository pessoaFisicaParticipanteRepository;
 
     // ================ MÉTODOS PARA PESSOA FÍSICA ================
@@ -76,6 +87,30 @@ public class PessoaService {
         pessoa.setEndereco(endereco);
         Pessoa pessoaSalva = pessoaRepository.save(pessoa);
 
+        // Buscar AtivaReserva do banco
+        Long ativaReservaId = dto.getPessoaFisicaParticipante().getAtivaReserva().getId();
+        AtivaReserva ativaReserva = ativaReservaRepository.findById(ativaReservaId)
+                .orElseThrow(() -> new RuntimeException("AtivaReserva com ID " + ativaReservaId + " não encontrada."));
+
+        // Buscar PostoGraduacao do banco
+        Long postoGraduacaoId = dto.getPessoaFisicaParticipante().getPostoGraduacao().getId();
+        PostoGraduacao postoGraduacao = postoGraduacaoRepository.findById(postoGraduacaoId)
+                .orElseThrow(() -> new RuntimeException("PostoGraduacao com ID " + postoGraduacaoId + " não encontrado."));
+
+        List<Experiencia> experienciasSalvas = null;
+        if (dto.getPessoaFisicaParticipante().getExperiencia() != null) {
+            dto.getPessoaFisicaParticipante().getExperiencia().forEach(exp -> exp.setEmail(pessoaSalva.getEmail()));
+            experienciasSalvas = experienciaRepository.saveAll(dto.getPessoaFisicaParticipante().getExperiencia());
+        }
+
+        // Salvar Formações Acadêmicas e associar ao participante
+        List<FormacaoAcademica> formacoesSalvas = null;
+        if (dto.getPessoaFisicaParticipante().getFormacoesAcademicas() != null) {
+            dto.getPessoaFisicaParticipante().getFormacoesAcademicas().forEach(f -> f.setEmail(pessoaSalva.getEmail()));
+            formacoesSalvas = formacaoAcademicaRepository.saveAll(dto.getPessoaFisicaParticipante().getFormacoesAcademicas());
+        }
+
+
         // Salvar PessoaFisica
         PessoaFisica pessoaFisica = dto.getPessoaFisica();
         pessoaFisica.setPessoa(pessoaSalva);
@@ -84,8 +119,12 @@ public class PessoaService {
         // Salvar PessoaFisicaParticipante
         PessoaFisicaParticipante participante = dto.getPessoaFisicaParticipante();
         participante.setPessoaFisica(pessoaFisicaSalva);
+        participante.setAtivaReserva(ativaReserva);
+        participante.setExperiencia(experienciasSalvas);
+        participante.setFormacoesAcademicas(formacoesSalvas);
         return pessoaFisicaParticipanteRepository.save(participante);
     }
+
 
     public Optional<PessoaFisicaParticipante> buscarPessoaFisicaParticipantePorId(Long id) {
         return pessoaFisicaParticipanteRepository.findById(id);

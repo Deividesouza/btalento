@@ -23,10 +23,12 @@ public class PessoaFisicaParticipante {
     private LocalDate dataBaixa;
 
     @ManyToOne
+    @JoinColumn(name = "posto_graduacao_id")
     private PostoGraduacao postoGraduacao;
 
     @ManyToOne
-    private AtivaReserva  ativaReserva;
+    @JoinColumn(name = "ativa_reserva_id")
+    private AtivaReserva ativaReserva;
 
     @OneToOne
     private PessoaFisica pessoaFisica;
