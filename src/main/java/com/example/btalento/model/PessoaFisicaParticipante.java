@@ -1,5 +1,6 @@
 package com.example.btalento.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,7 +37,8 @@ public class PessoaFisicaParticipante {
     @OneToMany(cascade = CascadeType.PERSIST)
     private List<FormacaoAcademica> formacoesAcademicas;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+
+    @OneToOne(mappedBy = "pessoaFisicaParticipante", cascade = CascadeType.PERSIST)
     private Curriculo curriculo;
 
     @OneToMany(cascade = CascadeType.PERSIST)

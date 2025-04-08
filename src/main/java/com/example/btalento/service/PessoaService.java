@@ -125,10 +125,117 @@ public class PessoaService {
         return pessoaFisicaParticipanteRepository.save(participante);
     }
 
+    @Transactional
+    public void editarPessoaFisicaParticipante(Long id, PessoaFisicaParticipante dto) {
+        PessoaFisica pessoaFisica = pessoaFisicaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pessoa Física com ID " + id + " não encontrada."));
+
+        // Atualiza os dados da pessoa associada
+        Pessoa pessoa = pessoaFisica.getPessoa();
+        pessoa.setNome(dto.getPessoaFisica().getPessoa().getNome());
+        pessoa.setEmail(dto.getPessoaFisica().getPessoa().getEmail()); // caso use o email
+
+        // Salvar Endereço (se for novo ou atualizado)
+        Endereco novoEndereco = dto.getPessoaFisica().getPessoa().getEndereco();
+        if (novoEndereco != null) {
+            novoEndereco.setId(pessoa.getEndereco().getId()); // garante que atualiza em vez de criar novo
+            Endereco enderecoSalvo = enderecoRepository.save(novoEndereco);
+            pessoa.setEndereco(enderecoSalvo);
+        }
+
+        Pessoa pessoaSalva = pessoaRepository.save(pessoa); // Salvar Pessoa com Endereço atualizado
+
+        // Atualiza os campos da Pessoa Física
+        pessoaFisica.setCpf(dto.getPessoaFisica().getCpf());
+        pessoaFisica.setPessoa(pessoaSalva);
+        PessoaFisica pessoaFisicaSalva = pessoaFisicaRepository.save(pessoaFisica);
+
+        // ====== Atualizar PessoaFisicaParticipante se existir ======
+        Optional<PessoaFisicaParticipante> participanteOpt = pessoaFisicaParticipanteRepository.findById(pessoaFisicaSalva.getId());
+        if (participanteOpt.isPresent()) {
+            PessoaFisicaParticipante participante = participanteOpt.get();
+
+            // Buscar AtivaReserva
+            Long ativaReservaId = dto.getAtivaReserva().getId();
+            AtivaReserva ativaReserva = ativaReservaRepository.findById(ativaReservaId)
+                    .orElseThrow(() -> new RuntimeException("AtivaReserva com ID " + ativaReservaId + " não encontrada."));
+
+            // Buscar PostoGraduacao
+            Long postoGraduacaoId = dto.getPostoGraduacao().getId();
+            PostoGraduacao postoGraduacao = postoGraduacaoRepository.findById(postoGraduacaoId)
+                    .orElseThrow(() -> new RuntimeException("PostoGraduacao com ID " + postoGraduacaoId + " não encontrado."));
+
+            // Atualizar Experiências
+            List<Experiencia> experienciasSalvas = null;
+            if (dto.getExperiencia() != null) {
+                dto.getExperiencia().forEach(exp -> exp.setEmail(pessoaSalva.getEmail()));
+                experienciasSalvas = experienciaRepository.saveAll(dto.getExperiencia());
+            }
+
+            // Atualizar Formações Acadêmicas
+            List<FormacaoAcademica> formacoesSalvas = null;
+            if (dto.getFormacoesAcademicas() != null) {
+                dto.getFormacoesAcademicas().forEach(f -> f.setEmail(pessoaSalva.getEmail()));
+                formacoesSalvas = formacaoAcademicaRepository.saveAll(dto.getFormacoesAcademicas());
+            }
+
+            // Atualiza o participante
+            participante.setAtivaReserva(ativaReserva);
+            participante.setPostoGraduacao(postoGraduacao);
+            participante.setPessoaFisica(pessoaFisicaSalva);
+            participante.setExperiencia(experienciasSalvas);
+            participante.setFormacoesAcademicas(formacoesSalvas);
+
+            pessoaFisicaParticipanteRepository.save(participante);
+        }
+    }
+
 
     public Optional<PessoaFisicaParticipante> buscarPessoaFisicaParticipantePorId(Long id) {
         return pessoaFisicaParticipanteRepository.findById(id);
     }
+
+    public List<PessoaFisicaParticipante> listarTodosParticipantes(){
+        return pessoaFisicaParticipanteRepository.findAll();
+    }
+
+    @Transactional
+    public void deletarPessoaFisicaParticipantePorId(Long id) {
+    PessoaFisicaParticipante participante = pessoaFisicaParticipanteRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Pessoa Física Participante com ID " + id + " não encontrada."));
+
+    // Apaga experiências se existirem
+    if (participante.getExperiencia() != null) {
+        experienciaRepository.deleteAll(participante.getExperiencia());
+    }
+
+    // Apaga formações acadêmicas se existirem
+    if (participante.getFormacoesAcademicas() != null) {
+        formacaoAcademicaRepository.deleteAll(participante.getFormacoesAcademicas());
+    }
+
+    // Apaga participante
+    pessoaFisicaParticipanteRepository.delete(participante);
+
+    // Apaga PessoaFisica
+    PessoaFisica pessoaFisica = participante.getPessoaFisica();
+    if (pessoaFisica != null) {
+        pessoaFisicaRepository.delete(pessoaFisica);
+    }
+
+    // Apaga Pessoa e Endereço
+    if (pessoaFisica != null && pessoaFisica.getPessoa() != null) {
+        Pessoa pessoa = pessoaFisica.getPessoa();
+        Endereco endereco = pessoa.getEndereco();
+
+        pessoaRepository.delete(pessoa);
+
+        if (endereco != null) {
+            enderecoRepository.delete(endereco);
+        }
+    }
+}
+
 
     // ================ MÉTODOS GENÉRICOS ================
     public Pessoa salvarPessoa(Pessoa pessoa) {

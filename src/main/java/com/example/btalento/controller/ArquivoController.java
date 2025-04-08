@@ -8,6 +8,7 @@ import com.example.btalento.repository.PessoaFisicaParticipanteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,13 +36,13 @@ public class ArquivoController {
     @Value("${upload.dir}")
     private String uploadDir;
 
-    @PostMapping("/upload")
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadCurriculo(
             @RequestParam("file") MultipartFile file,
-            @RequestParam("participanteId") Long participanteId) {
+            @RequestParam("participanteid") Long participanteid) {
 
         try {
-            PessoaFisicaParticipante participante = participanteRepository.findById(participanteId)
+            PessoaFisicaParticipante participante = participanteRepository.findById(participanteid)
                     .orElseThrow(() -> new RuntimeException("Participante não encontrado"));
 
             // Gerar hash do nome do arquivo
@@ -53,7 +54,10 @@ public class ArquivoController {
 
             // Criar e salvar entidade Curriculo
             Curriculo curriculo = new Curriculo();
+            curriculo.setPessoaFisicaParticipante(participante);
             curriculo.setNomeArquivoHash(fileHash);
+
+
             curriculoRepository.save(curriculo);
 
             return ResponseEntity.ok("Currículo salvo com sucesso");

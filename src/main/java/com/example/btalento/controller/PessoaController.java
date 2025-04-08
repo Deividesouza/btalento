@@ -64,6 +64,23 @@ public class PessoaController {
         return participante.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PutMapping("/participantes/editar/{id}")
+    public ResponseEntity<Void> editarPessoaFisicaParticipante(@PathVariable Long id, @RequestBody PessoaFisicaParticipante dto) {
+        pessoaService.editarPessoaFisicaParticipante(id, dto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/participantes/{id}/excluir")
+    public ResponseEntity<Void> excluirParticipante(@PathVariable Long id) {
+        try {
+            pessoaService.deletarPessoaFisicaParticipantePorId(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
     // ================ ENDPOINTS GENÉRICOS ================
     @GetMapping
     public ResponseEntity<List<Pessoa>> listarTodasPessoas() {
